@@ -48,6 +48,7 @@ import XBOnePassthrough, {
 	xbonePassthroughScheme,
 	xbonePassthroughState,
 } from '../Addons/XBOnePassthrough';
+import Sdvx, { sdvxScheme, knobState } from '../Addons/Sdvx';
 
 const schema = yup.object().shape({
 	...analogScheme,
@@ -69,6 +70,7 @@ const schema = yup.object().shape({
 	...focusModeScheme,
 	...keyboardScheme,
 	...inputHistoryScheme,
+	...sdvxScheme,
 });
 
 const defaultValues = {
@@ -92,6 +94,7 @@ const defaultValues = {
 	...focusModeState,
 	...keyboardState,
 	...inputHistoryState,
+	...sdvxScheme,
 };
 
 const ADDONS = [
@@ -114,7 +117,8 @@ const ADDONS = [
 	SNES,
 	FocusMode,
 	Keyboard,
-	InputHistory
+	InputHistory,
+	Sdvx,
 ];
 
 const FormContext = ({ setStoredData }) => {

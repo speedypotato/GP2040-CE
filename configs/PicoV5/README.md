@@ -1,0 +1,1 @@
+# GP2040 Configuration for the Pocket SDVX Pico v5

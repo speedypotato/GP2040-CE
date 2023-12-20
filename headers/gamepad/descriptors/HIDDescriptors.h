@@ -13,8 +13,8 @@
 // Windows, even though the driver is supplied by Microsoft, an
 // INF file is needed to load the driver.  These numbers need to
 // match the INF file.
-#define VENDOR_ID		0x10C4
-#define PRODUCT_ID		0x82C0
+#define VENDOR_ID		0x1ccf
+#define PRODUCT_ID		0x101c
 
 /**************************************************************************
  *
@@ -123,8 +123,8 @@ typedef struct __attribute((packed, aligned(1)))
 } HIDReport;
 
 static const uint8_t hid_string_language[]     = { 0x09, 0x04 };
-static const uint8_t hid_string_manufacturer[] = "Open Stick Community";
-static const uint8_t hid_string_product[]      = "GP2040-CE (D-Input)";
+static const uint8_t hid_string_manufacturer[] = "Konami Amusement";
+static const uint8_t hid_string_product[]      = "SOUND VOLTEX controller";
 static const uint8_t hid_string_version[]      = "1.0";
 
 static const uint8_t *hid_string_descriptors[] __attribute__((unused)) =
