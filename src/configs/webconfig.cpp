@@ -1153,6 +1153,13 @@ std::string setAddonOptions()
 	docToValue(analogOptions.auto_calibrate, doc, "auto_calibrate");
 	docToValue(analogOptions.enabled, doc, "AnalogInputEnabled");
 
+    SdvxOptions& sdvxOptions = Storage::getInstance().getAddonOptions().sdvxOptions;
+	docToPin(sdvxOptions.lKnobA, doc, "lKnobA");
+	docToPin(sdvxOptions.lKnobB, doc, "lKnobB");
+	docToPin(sdvxOptions.rKnobA, doc, "rKnobA");
+	docToPin(sdvxOptions.rKnobB, doc, "rKnobB");
+	docToValue(sdvxOptions.enabled, doc, "SDVXInputEnabled");
+
     BootselButtonOptions& bootselButtonOptions = Storage::getInstance().getAddonOptions().bootselButtonOptions;
 	docToValue(bootselButtonOptions.buttonMap, doc, "bootselButtonMap");
 	docToValue(bootselButtonOptions.enabled, doc, "BootselButtonAddonEnabled");
@@ -1578,6 +1585,13 @@ std::string getAddonOptions()
 	writeDoc(doc, "analog_deadzone", analogOptions.analog_deadzone);
 	writeDoc(doc, "auto_calibrate", analogOptions.auto_calibrate);
 	writeDoc(doc, "AnalogInputEnabled", analogOptions.enabled);
+
+    const SdvxOptions& sdvxOptions = Storage::getInstance().getAddonOptions().sdvxOptions;
+	writeDoc(doc, "lKnobA", cleanPin(sdvxOptions.lKnobA));
+	writeDoc(doc, "lKnobB", cleanPin(sdvxOptions.lKnobB));
+	writeDoc(doc, "rKnobA", cleanPin(sdvxOptions.rKnobA));
+	writeDoc(doc, "rKnobB", cleanPin(sdvxOptions.rKnobB));
+	writeDoc(doc, "SDVXInputEnabled", sdvxOptions.enabled);
 
     const BootselButtonOptions& bootselButtonOptions = Storage::getInstance().getAddonOptions().bootselButtonOptions;
 	writeDoc(doc, "bootselButtonMap", bootselButtonOptions.buttonMap);

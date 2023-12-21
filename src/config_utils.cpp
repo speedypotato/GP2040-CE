@@ -11,6 +11,7 @@
 #include "GamepadConfig.h"
 #include "version.h"
 #include "addons/analog.h"
+#include "addons/sdvx.h"
 #include "addons/board_led.h"
 #include "addons/bootsel_button.h"
 #include "addons/buzzerspeaker.h"
@@ -402,6 +403,13 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.addonOptions.analogOptions, forced_circularity, !!FORCED_CIRCULARITY_ENABLED);
     INIT_UNSET_PROPERTY(config.addonOptions.analogOptions, analog_deadzone, DEFAULT_ANALOG_DEADZONE);
     INIT_UNSET_PROPERTY(config.addonOptions.analogOptions, auto_calibrate, !!AUTO_CALIBRATE_ENABLED);
+
+    // addonOptions.sdvxOptions
+    INIT_UNSET_PROPERTY(config.addonOptions.sdvxOptions, enabled, !!SDVX_INPUT_ENABLED);
+    INIT_UNSET_PROPERTY(config.addonOptions.sdvxOptions, lKnobA, 27);
+    INIT_UNSET_PROPERTY(config.addonOptions.sdvxOptions, lKnobB, 28);
+    INIT_UNSET_PROPERTY(config.addonOptions.sdvxOptions, rKnobA, 6);
+    INIT_UNSET_PROPERTY(config.addonOptions.sdvxOptions, rKnobB, 7);
 
     // addonOptions.turboOptions
     INIT_UNSET_PROPERTY(config.addonOptions.turboOptions, enabled, !!TURBO_ENABLED);

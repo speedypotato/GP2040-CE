@@ -48,10 +48,11 @@ import XBOnePassthrough, {
 	xbonePassthroughScheme,
 	xbonePassthroughState,
 } from '../Addons/XBOnePassthrough';
-import Sdvx, { sdvxScheme, knobState } from '../Addons/Sdvx';
+import Sdvx, { sdvxScheme, sdvxState } from '../Addons/Sdvx';
 
 const schema = yup.object().shape({
 	...analogScheme,
+	...sdvxScheme,
 	...bootselScheme,
 	...onBoardLedScheme,
 	...turboScheme,
@@ -70,11 +71,11 @@ const schema = yup.object().shape({
 	...focusModeScheme,
 	...keyboardScheme,
 	...inputHistoryScheme,
-	...sdvxScheme,
 });
 
 const defaultValues = {
 	...analogState,
+	...sdvxState,
 	...bootselState,
 	...onBoardLedState,
 	...turboState,
@@ -94,13 +95,13 @@ const defaultValues = {
 	...focusModeState,
 	...keyboardState,
 	...inputHistoryState,
-	...sdvxScheme,
 };
 
 const ADDONS = [
 	Bootsel,
 	OnBoardLed,
 	Analog,
+	Sdvx,
 	Turbo,
 	Joystick,
 	Reverse,
@@ -118,7 +119,6 @@ const ADDONS = [
 	FocusMode,
 	Keyboard,
 	InputHistory,
-	Sdvx,
 ];
 
 const FormContext = ({ setStoredData }) => {

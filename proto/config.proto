@@ -339,6 +339,16 @@ message AnalogOptions
 	optional bool auto_calibrate = 12;
 }
 
+message SdvxOptions
+{
+	optional bool enabled = 1;
+
+	optional int32 lKnobA = 27;
+	optional int32 lKnobB = 28;
+	optional int32 rKnobA = 6;
+	optional int32 rKnobB = 7;
+}
+
 message TurboOptions
 {
 	optional bool enabled = 1;
@@ -710,6 +720,7 @@ message AddonOptions
 	optional MacroOptions macroOptions = 20;
 	optional InputHistoryOptions inputHistoryOptions = 21;
 	optional XBOnePassthroughOptions xbonePassthroughOptions = 22;
+	optional SdvxOptions sdvxOptions = 23;
 }
 
 message MigrationHistory
