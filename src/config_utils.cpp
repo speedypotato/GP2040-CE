@@ -487,7 +487,7 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
         INIT_UNSET_PROPERTY(config.animationOptions.profiles[profileIndex], bEnabled, 0);
      
     //TESTING
-    if(false)
+    if(true)
     { 
         config.animationOptions.customColors_count = 1;
         config.animationOptions.customColors[0] = 255;
