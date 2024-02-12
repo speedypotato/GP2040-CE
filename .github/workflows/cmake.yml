@@ -63,7 +63,8 @@ jobs:
           WaveshareZero,
           Stress,
           SGFDevices,
-          ZeroRhythm]
+          ZeroRhythm,
+          SplitfoxPro]
 
     steps:
     #Global Setup
