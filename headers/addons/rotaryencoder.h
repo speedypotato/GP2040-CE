@@ -110,7 +110,7 @@ public:
         bool prevB = false;
         uint32_t updateTime = 0;
         uint32_t changeTime = 0;
-        uint8_t delay = 500;
+        uint16_t delay = 4000;
     } EncoderPinState;
 private:
     EncoderPinState encoderState[MAX_ENCODERS];
