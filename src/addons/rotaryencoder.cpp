@@ -67,7 +67,7 @@ void RotaryEncoderInput::process()
 {
     Gamepad * gamepad = Storage::getInstance().GetGamepad();
 
-    uint32_t now = getMillis();
+    uint32_t now = getMicro();
 
     for (uint8_t i = 0; i < MAX_ENCODERS; i++) {
         if (encoderMap[i].enabled) {
