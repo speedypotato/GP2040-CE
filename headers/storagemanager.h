@@ -45,6 +45,7 @@ public:
 	AnimationOptions_Proto& getAnimationOptions() { return config.animationOptions; }
 	ProfileOptions& getProfileOptions() { return config.profileOptions; }
 	GpioAction* getProfilePinMappings() { return functionalPinMappings; }
+	bool* getFunctionalPinActiveHigh() { return functionalPinActiveHigh; }
 	PeripheralOptions& getPeripheralOptions() { return config.peripheralOptions; }
 
 	void init();
@@ -86,6 +87,7 @@ private:
 	uint32_t animationOptionsCrc = 0;
 	AnimationOptions animationOptionsToSave = {};
 	GpioAction functionalPinMappings[NUM_BANK0_GPIOS];
+	bool functionalPinActiveHigh[NUM_BANK0_GPIOS];
 };
 
 #endif

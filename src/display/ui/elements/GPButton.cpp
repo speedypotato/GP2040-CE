@@ -2,10 +2,19 @@
 #include "GPGFX_UI_layouts.h"
 
 void GPButton::draw() {
+    
+    //Active High Patch
+	bool* pinActiveHigh = Storage::getInstance().getFunctionalPinActiveHigh();
+    uint32_t xor_mask = 0b0;
+    for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+        xor_mask <<= 1;
+        xor_mask |= pinActiveHigh[pin];
+    }
+
     // new style button:
     uint16_t baseX = this->x;
     uint16_t baseY = this->y;
-    Mask_t pinValues = ~gpio_get_all();
+    Mask_t pinValues = ~gpio_get_all() ^ xor_mask;
 
     // scale to viewport
     double scaleX = this->getScaleX();

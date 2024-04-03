@@ -139,6 +139,7 @@ void Storage::setFunctionalPinMappings()
 			functionalPinMappings[pin] = alts[pin].action;
 		} else {
 			functionalPinMappings[pin] = this->config.gpioMappings.pins[pin].action;
+			functionalPinActiveHigh[pin] = this->config.gpioMappings.pins[pin].activeHigh;
 		}
 	}
 }

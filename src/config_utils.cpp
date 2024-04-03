@@ -225,6 +225,98 @@
     #define GPIO_PIN_29 GpioAction::NONE
 #endif
 
+// Active High
+#ifndef GPIO_PIN_00_ACTIVE_HIGH
+    #define GPIO_PIN_00_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_01_ACTIVE_HIGH
+    #define GPIO_PIN_01_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_02_ACTIVE_HIGH
+    #define GPIO_PIN_02_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_03_ACTIVE_HIGH
+    #define GPIO_PIN_03_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_04_ACTIVE_HIGH
+    #define GPIO_PIN_04_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_05_ACTIVE_HIGH
+    #define GPIO_PIN_05_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_06_ACTIVE_HIGH
+    #define GPIO_PIN_06_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_07_ACTIVE_HIGH
+    #define GPIO_PIN_07_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_08_ACTIVE_HIGH
+    #define GPIO_PIN_08_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_09_ACTIVE_HIGH
+    #define GPIO_PIN_09_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_10_ACTIVE_HIGH
+    #define GPIO_PIN_10_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_11_ACTIVE_HIGH
+    #define GPIO_PIN_11_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_12_ACTIVE_HIGH
+    #define GPIO_PIN_12_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_13_ACTIVE_HIGH
+    #define GPIO_PIN_13_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_14_ACTIVE_HIGH
+    #define GPIO_PIN_14_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_15_ACTIVE_HIGH
+    #define GPIO_PIN_15_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_16_ACTIVE_HIGH
+    #define GPIO_PIN_16_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_17_ACTIVE_HIGH
+    #define GPIO_PIN_17_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_18_ACTIVE_HIGH
+    #define GPIO_PIN_18_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_19_ACTIVE_HIGH
+    #define GPIO_PIN_19_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_20_ACTIVE_HIGH
+    #define GPIO_PIN_20_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_21_ACTIVE_HIGH
+    #define GPIO_PIN_21_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_22_ACTIVE_HIGH
+    #define GPIO_PIN_22_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_23_ACTIVE_HIGH
+    #define GPIO_PIN_23_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_24_ACTIVE_HIGH
+    #define GPIO_PIN_24_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_25_ACTIVE_HIGH
+    #define GPIO_PIN_25_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_26_ACTIVE_HIGH
+    #define GPIO_PIN_26_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_27_ACTIVE_HIGH
+    #define GPIO_PIN_27_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_28_ACTIVE_HIGH
+    #define GPIO_PIN_28_ACTIVE_HIGH false
+#endif
+#ifndef GPIO_PIN_29_ACTIVE_HIGH
+    #define GPIO_PIN_29_ACTIVE_HIGH false
+#endif
+
 // -----------------------------------------------------
 // Migration leftovers
 // -----------------------------------------------------
@@ -973,6 +1065,18 @@ void gpioMappingsMigrationCore(Config& config)
                                                GPIO_PIN_21, GPIO_PIN_22, GPIO_PIN_23,
                                                GPIO_PIN_24, GPIO_PIN_25, GPIO_PIN_26,
                                                GPIO_PIN_27, GPIO_PIN_28, GPIO_PIN_29};
+                                               
+    // Assign all potential board config pins
+    bool boardConfigActiveHigh[NUM_BANK0_GPIOS] = {GPIO_PIN_00_ACTIVE_HIGH, GPIO_PIN_01_ACTIVE_HIGH, GPIO_PIN_02_ACTIVE_HIGH,
+                                                    GPIO_PIN_03_ACTIVE_HIGH, GPIO_PIN_04_ACTIVE_HIGH, GPIO_PIN_05_ACTIVE_HIGH,
+                                                    GPIO_PIN_06_ACTIVE_HIGH, GPIO_PIN_07_ACTIVE_HIGH, GPIO_PIN_08_ACTIVE_HIGH,
+                                                    GPIO_PIN_09_ACTIVE_HIGH, GPIO_PIN_10_ACTIVE_HIGH, GPIO_PIN_11_ACTIVE_HIGH,
+                                                    GPIO_PIN_12_ACTIVE_HIGH, GPIO_PIN_13_ACTIVE_HIGH, GPIO_PIN_14_ACTIVE_HIGH,
+                                                    GPIO_PIN_15_ACTIVE_HIGH, GPIO_PIN_16_ACTIVE_HIGH, GPIO_PIN_17_ACTIVE_HIGH,
+                                                    GPIO_PIN_18_ACTIVE_HIGH, GPIO_PIN_19_ACTIVE_HIGH, GPIO_PIN_20_ACTIVE_HIGH,
+                                                    GPIO_PIN_21_ACTIVE_HIGH, GPIO_PIN_22_ACTIVE_HIGH, GPIO_PIN_23_ACTIVE_HIGH,
+                                                    GPIO_PIN_24_ACTIVE_HIGH, GPIO_PIN_25_ACTIVE_HIGH, GPIO_PIN_26_ACTIVE_HIGH,
+                                                    GPIO_PIN_27_ACTIVE_HIGH, GPIO_PIN_28_ACTIVE_HIGH, GPIO_PIN_29_ACTIVE_HIGH};
     
     // If we didn't import from protobuf, import from boardconfig
     for(unsigned int i = 0; i < NUM_BANK0_GPIOS; i++) {
@@ -1179,6 +1283,7 @@ void gpioMappingsMigrationCore(Config& config)
 
     for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
         config.gpioMappings.pins[pin].action = actions[pin];
+		config.gpioMappings.pins[pin].activeHigh = boardConfigActiveHigh[pin];
     }
     // reminder that this must be set or else nanopb won't retain anything
     config.gpioMappings.pins_count = NUM_BANK0_GPIOS;

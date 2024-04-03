@@ -1943,7 +1943,16 @@ std::string getHeldPins()
     }
 
     uint32_t timePinWait = getMillis();
-    uint32_t oldState = ~gpio_get_all();
+
+    //Active High Patch
+	bool* pinActiveHigh = Storage::getInstance().getFunctionalPinActiveHigh();
+    uint32_t xor_mask = 0b0;
+    for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+        xor_mask <<= 1;
+        xor_mask |= pinActiveHigh[pin];
+    }
+
+    uint32_t oldState = ~gpio_get_all() ^ xor_mask;
     uint32_t newState = 0;
     uint32_t debounceStartTime = 0;
     std::set<uint> heldPinsSet;
@@ -1958,7 +1967,7 @@ std::string getHeldPins()
         if (isAnyPinHeld && newState == oldState) // Should match old state when pins are released
             break;
 
-        newState = ~gpio_get_all();
+        newState = ~gpio_get_all() ^ xor_mask;
         uint32_t newPin = newState ^ oldState;
         for (uint32_t pin = 0; pin < NUM_BANK0_GPIOS; pin++) {
             if (gpio_get_function(pin) == GPIO_FUNC_SIO &&
