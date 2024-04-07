@@ -28,6 +28,8 @@ private:
     void debounceGpioGetAll();
     Mask_t buttonGpios;
     uint32_t gpioDebounceTime[NUM_BANK0_GPIOS];
+    // Active High
+    uint32_t xor_mask;
 
     struct RebootHotkeys {
         RebootHotkeys();

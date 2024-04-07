@@ -65,6 +65,14 @@ void GP2040::setup() {
 	// Set pin mappings for all GPIO functions
 	Storage::getInstance().setFunctionalPinMappings();
 
+	//Active High Patch
+	bool* pinActiveHigh = Storage::getInstance().getFunctionalPinActiveHigh();
+    uint32_t xor_mask = 0b0;
+    for (Pin_t pin = 0; pin < (Pin_t)NUM_BANK0_GPIOS; pin++) {
+        xor_mask <<= 1;
+        xor_mask |= pinActiveHigh[pin];
+    }
+
 	// Setup Gamepad
 	gamepad->setup();
 	
@@ -223,7 +231,7 @@ void GP2040::deinitializeStandardGpio() {
  * instead, if you don't want debounced data.
  */
 void GP2040::debounceGpioGetAll() {
-	Mask_t raw_gpio = ~gpio_get_all();
+	Mask_t raw_gpio = ~gpio_get_all() ^ xor_mask;
 	Gamepad* gamepad = Storage::getInstance().GetGamepad();
 	// return if state isn't different than the actual
 	if (gamepad->debouncedGpio == (raw_gpio & buttonGpios)) return;
