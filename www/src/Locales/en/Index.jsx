@@ -14,6 +14,7 @@ import AddonsConfig from './AddonsConfig';
 import CaptureButton from './CaptureButton';
 import WiiAddon from './Addons/WiiAddon';
 import Rotary from './Addons/Rotary';
+import InvertButton from './Addons/InvertButton';
 import InputMacroAddon from './InputMacroAddon';
 
 export default {
@@ -33,5 +34,6 @@ export default {
 	CaptureButton,
 	WiiAddon,
     Rotary,
+	InvertButton,
 	InputMacroAddon,
 };

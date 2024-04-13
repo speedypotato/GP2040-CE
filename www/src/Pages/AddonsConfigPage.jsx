@@ -41,6 +41,7 @@ import FocusMode, {
 import Keyboard, { keyboardScheme, keyboardState } from '../Addons/Keyboard';
 import InputHistory, { inputHistoryScheme, inputHistoryState } from '../Addons/InputHistory';
 import Rotary, { rotaryScheme, rotaryState } from '../Addons/Rotary';
+import InvertButton, { invertButtonScheme, invertButtonState } from '../Addons/InvertButton';
 
 const schema = yup.object().shape({
 	...analogScheme,
@@ -61,6 +62,7 @@ const schema = yup.object().shape({
 	...keyboardScheme,
 	...inputHistoryScheme,
 	...rotaryScheme,
+	...invertButtonScheme,
 });
 
 const defaultValues = {
@@ -83,6 +85,7 @@ const defaultValues = {
 	...keyboardState,
 	...inputHistoryState,
 	...rotaryState,
+	...invertButtonState,
 };
 
 const ADDONS = [
@@ -104,7 +107,8 @@ const ADDONS = [
 	FocusMode,
 	Keyboard,
 	InputHistory,
-    Rotary
+    Rotary,
+	InvertButton
 ];
 
 const FormContext = ({ setStoredData }) => {

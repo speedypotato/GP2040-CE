@@ -727,6 +727,29 @@ message RotaryOptions
     optional RotaryPinOptions encoderTwo = 3;
 }
 
+message InvertButtonOptions
+{
+    optional bool enabled = 1;
+    optional bool invertB1 = 2;
+    optional bool invertB2 = 3;
+    optional bool invertB3 = 4;
+    optional bool invertB4 = 5;
+    optional bool invertL1 = 6;
+    optional bool invertR1 = 7;
+    optional bool invertL2 = 8;
+    optional bool invertR2 = 9;
+    optional bool invertS1 = 10;
+    optional bool invertS2 = 11;
+    optional bool invertL3 = 12;
+    optional bool invertR3 = 13;
+    optional bool invertA1 = 14;
+    optional bool invertA2 = 15;
+    optional bool invertUp = 16;
+    optional bool invertDown = 17;
+    optional bool invertLeft = 18;
+    optional bool invertRight = 19;
+}
+
 message AddonOptions
 {
     optional BootselButtonOptions bootselButtonOptions = 1;
@@ -753,6 +776,7 @@ message AddonOptions
     optional XBOnePassthroughOptions xbonePassthroughOptions = 22 [deprecated = true];
     optional AnalogADS1256Options analogADS1256Options = 23;
     optional RotaryOptions rotaryOptions = 24;
+    optional InvertButtonOptions invertButtonOptions = 25;
 }
 
 message MigrationHistory

@@ -1400,6 +1400,27 @@ std::string setAddonOptions()
     docToValue(rotaryOptions.encoderTwo.allowWrapAround, doc, "encoderTwoAllowWrapAround");
     docToValue(rotaryOptions.encoderTwo.multiplier, doc, "encoderTwoMultiplier");
 
+    InvertButtonOptions& invertButtonOptions = Storage::getInstance().getAddonOptions().invertButtonOptions;
+    docToValue(invertButtonOptions.enabled, doc, "InvertButtonAddonEnabled");
+    docToValue(invertButtonOptions.invertB1, doc, "invertB1");
+    docToValue(invertButtonOptions.invertB2, doc, "invertB2");
+    docToValue(invertButtonOptions.invertB3, doc, "invertB3");
+    docToValue(invertButtonOptions.invertB4, doc, "invertB4");
+    docToValue(invertButtonOptions.invertL1, doc, "invertL1");
+    docToValue(invertButtonOptions.invertR1, doc, "invertR1");
+    docToValue(invertButtonOptions.invertL2, doc, "invertL2");
+    docToValue(invertButtonOptions.invertR2, doc, "invertR2");
+    docToValue(invertButtonOptions.invertS1, doc, "invertS1");
+    docToValue(invertButtonOptions.invertS2, doc, "invertS2");
+    docToValue(invertButtonOptions.invertL3, doc, "invertL3");
+    docToValue(invertButtonOptions.invertR3, doc, "invertR3");
+    docToValue(invertButtonOptions.invertA1, doc, "invertA1");
+    docToValue(invertButtonOptions.invertA2, doc, "invertA2");
+    docToValue(invertButtonOptions.invertUp, doc, "invertUp");
+    docToValue(invertButtonOptions.invertDown, doc, "invertDown");
+    docToValue(invertButtonOptions.invertLeft, doc, "invertLeft");
+    docToValue(invertButtonOptions.invertRight, doc, "invertRight");
+
     Storage::getInstance().save();
 
     return serialize_json(doc);
@@ -1818,6 +1839,27 @@ std::string getAddonOptions()
     writeDoc(doc, "encoderTwoResetAfter", rotaryOptions.encoderTwo.resetAfter);
     writeDoc(doc, "encoderTwoAllowWrapAround", rotaryOptions.encoderTwo.allowWrapAround);
     writeDoc(doc, "encoderTwoMultiplier", rotaryOptions.encoderTwo.multiplier);
+    
+    InvertButtonOptions& invertButtonOptions = Storage::getInstance().getAddonOptions().invertButtonOptions;
+    writeDoc(doc, "InvertButtonAddonEnabled", invertButtonOptions.enabled);
+    writeDoc(doc, "invertB1", invertButtonOptions.invertB1);
+    writeDoc(doc, "invertB2", invertButtonOptions.invertB2);
+    writeDoc(doc, "invertB3", invertButtonOptions.invertB3);
+    writeDoc(doc, "invertB4", invertButtonOptions.invertB4);
+    writeDoc(doc, "invertL1", invertButtonOptions.invertL1);
+    writeDoc(doc, "invertR1", invertButtonOptions.invertR1);
+    writeDoc(doc, "invertL2", invertButtonOptions.invertL2);
+    writeDoc(doc, "invertR2", invertButtonOptions.invertR2);
+    writeDoc(doc, "invertS1", invertButtonOptions.invertS1);
+    writeDoc(doc, "invertS2", invertButtonOptions.invertS2);
+    writeDoc(doc, "invertL3", invertButtonOptions.invertL3);
+    writeDoc(doc, "invertR3", invertButtonOptions.invertR3);
+    writeDoc(doc, "invertA1", invertButtonOptions.invertA1);
+    writeDoc(doc, "invertA2", invertButtonOptions.invertA2);
+    writeDoc(doc, "invertUp", invertButtonOptions.invertUp);
+    writeDoc(doc, "invertDown", invertButtonOptions.invertDown);
+    writeDoc(doc, "invertLeft", invertButtonOptions.invertLeft);
+    writeDoc(doc, "invertRight", invertButtonOptions.invertRight);
 
     return serialize_json(doc);
 }

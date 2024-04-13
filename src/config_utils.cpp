@@ -32,6 +32,7 @@
 #include "addons/snes_input.h"
 #include "addons/input_macro.h"
 #include "addons/rotaryencoder.h"
+#include "addons/invert_button.h"
 
 #include "CRC32.h"
 #include "FlashPROM.h"
@@ -682,6 +683,27 @@ void ConfigUtils::initUnsetPropertiesWithDefaults(Config& config)
     INIT_UNSET_PROPERTY(config.addonOptions.rotaryOptions.encoderTwo, resetAfter, ENCODER_TWO_RESET);
     INIT_UNSET_PROPERTY(config.addonOptions.rotaryOptions.encoderTwo, allowWrapAround, ENCODER_TWO_WRAP);
     INIT_UNSET_PROPERTY(config.addonOptions.rotaryOptions.encoderTwo, multiplier, ENCODER_TWO_MULTIPLIER);
+
+    // addonOptions.invertButtonOptions
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, enabled, INVERT_BUTTON_ENABLED);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertB1, INVERT_B1);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertB2, INVERT_B2);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertB3, INVERT_B3);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertB4, INVERT_B4);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertL1, INVERT_L1);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertR1, INVERT_R1);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertL2, INVERT_L2);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertR2, INVERT_R2);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertS1, INVERT_S1);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertS2, INVERT_S2);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertL3, INVERT_L3);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertR3, INVERT_R3);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertA1, INVERT_A1);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertA2, INVERT_A2);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertUp, INVERT_UP);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertDown, INVERT_DOWN);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertLeft, INVERT_LEFT);
+    INIT_UNSET_PROPERTY(config.addonOptions.invertButtonOptions, invertRight, INVERT_RIGHT);
 
     // keyboardMapping
     INIT_UNSET_PROPERTY(config.addonOptions.keyboardHostOptions, enabled, KEYBOARD_HOST_ENABLED);
