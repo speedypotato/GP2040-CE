@@ -71,7 +71,8 @@ jobs:
           WaveshareZero,
           Stress,
           SGFDevices,
-          ZeroRhythm]
+          ZeroRhythm, SplitFoxPro
+          ]
 
     steps:
     - name: Setup cmake
