@@ -1609,6 +1609,7 @@ std::string getHETriggerCalibrations()
         trigger["release"] = heTriggers[i].release;
         trigger["noise"] = heTriggers[i].noise;
         trigger["rapidTrigger"] = heTriggers[i].rapidTrigger;
+        trigger["rapidTriggerDelta"] = heTriggers[i].rapidTriggerDelta;
     }
 
     return serialize_json(doc);
@@ -1629,6 +1630,7 @@ std::string setHETriggerCalibrations()
         heTriggers[i].release = doc["triggers"][i]["release"];
         heTriggers[i].noise = doc["triggers"][i]["noise"];
         heTriggers[i].rapidTrigger = doc["triggers"][i]["rapidTrigger"];
+        heTriggers[i].rapidTriggerDelta = (uint32_t)doc["triggers"][i]["rapidTriggerDelta"];
     }
     
     Storage::getInstance().getAddonOptions().heTriggerOptions.triggers_count = 32;

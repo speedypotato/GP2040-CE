@@ -74,6 +74,7 @@ void HETriggerAddon::setup() {
             emaSmoothingReads[i] = adc_read();
             lastIncrement[i] = adc_read();
             triggerActive[i] = false;
+            peakPosition[i] = 0;
         }
         emaSmoothingFactor = (float)options.smoothingFactor / 100.f; // 99 = max smoothing factor
     }
@@ -131,19 +132,34 @@ void HETriggerAddon::preprocess() {
         }
 
         if (!options.triggers[he].rapidTrigger) {
-            // no rapid trigger
+            // no rapid trigger - standard on/off behavior
             triggerActive[he] = value > activationThreshold;
         } else {
-            // chad rapid trigger
+            // rapid trigger enabled - use delta-based release
+            uint16_t delta = (uint16_t)options.triggers[he].rapidTriggerDelta;
+            
+            // Track peak position while pressing
+            if (triggerActive[he] && value > peakPosition[he]) {
+                peakPosition[he] = value;
+            }
+            
+            // Detect pressing motion (value increasing beyond noise threshold)
             bool pressing = (value > lastIncrement[he]) && (value - lastIncrement[he]) > options.triggers[he].noise;
+            // Detect releasing motion (value decreasing beyond noise threshold)
             bool releasing = (lastIncrement[he] > value) && (lastIncrement[he] - value) > options.triggers[he].noise;
+            
+            // Update lastIncrement only on significant motion
             if (pressing || releasing) {
                 lastIncrement[he] = value;
             }
-
-            if ( !triggerActive[he] && pressing && value >= activationThreshold) {
+            
+            // Activate: when pressing and past the activation threshold
+            if (!triggerActive[he] && pressing && value >= activationThreshold) {
                 triggerActive[he] = true;
-            } else if (triggerActive[he] && releasing && value <= releaseThreshold) {
+                peakPosition[he] = value;
+            }
+            // Deactivate: when releasing and moved back by delta from peak position
+            else if (triggerActive[he] && releasing && (peakPosition[he] - value) >= delta) {
                 triggerActive[he] = false;
             }
         }

@@ -875,6 +875,7 @@ message HETriggerInfo
     optional int32 noise = 7;
     optional bool rapidTrigger = 8; 
     optional bool is_polarized = 9;
+    optional uint32 rapidTriggerDelta = 10;
 }
 
 message HETriggerOptions

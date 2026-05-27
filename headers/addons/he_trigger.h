@@ -75,6 +75,10 @@
 #define HETRIGGER_DEFAULT_RAPID 0
 #endif
 
+#ifndef HETRIGGER_DEFAULT_RAPID_DELTA
+#define HETRIGGER_DEFAULT_RAPID_DELTA 200
+#endif
+
 // 32 possible HE triggers
 #ifndef HETRIGGER_HE0_ACTION
 #define HETRIGGER_HE0_ACTION GpioAction::NONE
@@ -869,6 +873,7 @@ private:
     uint16_t emaSmoothingReads[32];
     bool triggerActive[32];
     uint16_t lastIncrement[32];
+    uint16_t peakPosition[32];
     float emaSmoothingFactor;
 
     // Used during processing

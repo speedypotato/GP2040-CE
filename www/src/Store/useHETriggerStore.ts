@@ -12,6 +12,7 @@ export type Trigger = {
 	release: number;
 	noise: number;
 	rapidTrigger: boolean;
+	rapidTriggerDelta: number;
 };
 
 type State = {
@@ -26,19 +27,20 @@ type Actions = {
 	saveHETriggers: () => Promise<object>;
 };
 
-const INITIAL_STATE: State = {
-    triggers: Array(32).map(()=>({ 
-		action:-10,
-		idle:100,
-		active:2000,
-		pressed:3500,
-		is_polarized: false,
-		release:2000,
-		noise:50,
-		rapidTrigger:false
-	})),
-	loadingTriggers: false,
-};
+	const INITIAL_STATE: State = {
+	    triggers: Array(32).map(()=>({ 
+			action:-10,
+			idle:100,
+			active:2000,
+			pressed:3500,
+			is_polarized: false,
+			release:2000,
+			noise:50,
+			rapidTrigger:false,
+			rapidTriggerDelta:200
+		})),
+		loadingTriggers: false,
+	};
 
 const useHETriggerStore = create<State & Actions>()((set, get) => ({
 	...INITIAL_STATE,

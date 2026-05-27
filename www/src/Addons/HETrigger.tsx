@@ -288,6 +288,7 @@ const TriggerActionsForm = ({
 											<th>{t('HETrigger:voltage-table-rapid-trigger-text')}</th>
 											<th>{t('HETrigger:voltage-table-release-text')}</th>
 											<th>{t('HETrigger:voltage-table-noise-text')}</th>
+											<th>{t('HETrigger:voltage-table-delta-text')}</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -300,9 +301,78 @@ const TriggerActionsForm = ({
 											<td>{triggers[key].active}</td>
 											<td>{triggers[key].pressed}</td>
 											<td>{triggers[key].is_polarized ? 'S' : 'N'}</td>
-											<td>{triggers[key].rapidTrigger ? 'Enabled' : 'Disabled'}</td>
-											<td>{triggers[key].rapidTrigger ? triggers[key].release : 'N/A'}</td>
-											<td>{triggers[key].rapidTrigger ? triggers[key].noise : 'N/A'}</td>
+											<td>
+												<FormCheck
+													type="switch"
+													id={`rapid-trigger-${key}`}
+													checked={triggers[key].rapidTrigger}
+													onChange={(e) => {
+														setHETrigger({
+															id: parseInt(key),
+															...triggers[key],
+															rapidTrigger: e.target.checked
+														});
+													}}
+													disabled={triggers[key].action === -10}
+												/>
+											</td>
+											<td>
+												{triggers[key].rapidTrigger ? (
+													<input
+														type="number"
+														className="form-control form-control-sm he-trigger-input"
+														value={triggers[key].release}
+														min={0}
+														max={4095}
+														onChange={(e) => {
+															setHETrigger({
+																id: parseInt(key),
+																...triggers[key],
+																release: parseInt(e.target.value) || 0
+															});
+														}}
+														disabled={triggers[key].action === -10}
+													/>
+												) : 'N/A'}
+											</td>
+											<td>
+												{triggers[key].rapidTrigger ? (
+													<input
+														type="number"
+														className="form-control form-control-sm he-trigger-input"
+														value={triggers[key].noise}
+														min={1}
+														max={1000}
+														onChange={(e) => {
+															setHETrigger({
+																id: parseInt(key),
+																...triggers[key],
+																noise: parseInt(e.target.value) || 1
+															});
+														}}
+														disabled={triggers[key].action === -10}
+													/>
+												) : 'N/A'}
+											</td>
+											<td>
+												{triggers[key].rapidTrigger ? (
+													<input
+														type="number"
+														className="form-control form-control-sm he-trigger-input"
+														value={triggers[key].rapidTriggerDelta}
+														min={1}
+														max={4095}
+														onChange={(e) => {
+															setHETrigger({
+																id: parseInt(key),
+																...triggers[key],
+																rapidTriggerDelta: parseInt(e.target.value) || 1
+															});
+														}}
+														disabled={triggers[key].action === -10}
+													/>
+												) : 'N/A'}
+											</td>
 										</tr>
 									))}
 									</tbody>

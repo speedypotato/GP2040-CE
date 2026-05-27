@@ -59,6 +59,7 @@ const HECalibration = ({
 	const [release, setRelease] = useState(2000);
 	const [noise, setNoise] = useState(50);
 	const [rapidTrigger, setRapidTrigger] = useState(false);
+	const [rapidTriggerDelta, setRapidTriggerDelta] = useState(200);
 
 
 
@@ -114,6 +115,7 @@ const HECalibration = ({
 			release,
 			noise,
 			rapidTrigger,
+			rapidTriggerDelta,
 		})
 		stopCalibration();
 		if ( calibrateAllLoop ) {
@@ -229,6 +231,7 @@ const HECalibration = ({
 		setRelease(triggers[target.current].release);
 		setNoise(triggers[target.current].noise);
 		setRapidTrigger(triggers[target.current].rapidTrigger);
+		setRapidTriggerDelta(triggers[target.current].rapidTriggerDelta || 200);
 		setPolarity(triggers[target.current].is_polarized);
 	};
 
@@ -241,6 +244,7 @@ const HECalibration = ({
 		setRelease(triggers[target.current].release);
 		setNoise(triggers[target.current].noise);
 		setRapidTrigger(triggers[target.current].rapidTrigger);
+		setRapidTriggerDelta(triggers[target.current].rapidTriggerDelta || 200);
 		setPolarity(triggers[target.current].is_polarized);
 	};
 
@@ -491,7 +495,6 @@ const HECalibration = ({
 						}}
 					/></Col>
 					{rapidTrigger && <>
-					
 				<Col xs={4} className="mb-3">
 						<FormControl
 							type="number"
@@ -505,7 +508,7 @@ const HECalibration = ({
 							min={0}
 							max={ADC_MAX}
 						/>
-						</Col>
+					</Col>
 				<Col xs={4} className="mb-3">
 						<FormControl
 							type="number"
@@ -516,9 +519,24 @@ const HECalibration = ({
 							onChange={(e) => {
 								setNoise(parseInt((e.target as HTMLInputElement).value));
 							}}
-							min={0}
+							min={1}
 							max={ADC_MAX}
-						/></Col>
+						/>
+					</Col>
+				<Col xs={4} className="mb-3">
+						<FormControl
+							type="number"
+							label={t(`HETrigger:rapid-trigger-delta-input-text`)}
+							name="rapidTriggerDelta"
+							className="form-select-sm"
+							value={rapidTriggerDelta}
+							onChange={(e) => {
+								setRapidTriggerDelta(parseInt((e.target as HTMLInputElement).value));
+							}}
+							min={1}
+							max={ADC_MAX}
+						/>
+					</Col>
 					</>}
 				<Col xs={12} className="mb-3">
 					{t(`HETrigger:activation-reading-text`)}
@@ -613,6 +631,7 @@ const HECalibration = ({
 						setRelease(voltageIdle + Math.floor((voltage-voltageIdle)*0.625));
 						setNoise(50);
 						setRapidTrigger(false);
+						setRapidTriggerDelta(200);
 						updateCalibrationRead(2);
 					}} hidden={calibrationStep !== 1}>
 						<Spinner
