@@ -30,9 +30,9 @@ void PeripheralUSB::setup() {
         pio_cfg.pin_dp = _DP;
         pio_cfg.pinout = (_Order == 0 ? PIO_USB_PINOUT_DPDM : PIO_USB_PINOUT_DMDP);
         pio_cfg.pio_tx_num = 0;   // TX on PIO0
-        pio_cfg.sm_tx      = 1;   // PIO0 SM1 (NeoPico uses PIO0 SM0)
-        pio_cfg.pio_rx_num = 1;   // RX + EOP on PIO1 (force two-PIO layout)
-        pio_cfg.sm_rx      = 0;   // PIO1 SM0
-        pio_cfg.sm_eop     = 1;   // PIO1 SM1
+        pio_cfg.sm_tx      = 0;   // PIO0 SM0
+        pio_cfg.pio_rx_num = 0;   // RX + EOP also on PIO0 (single-PIO)
+        pio_cfg.sm_rx      = 1;   // PIO0 SM1
+        pio_cfg.sm_eop     = 2;   // PIO0 SM2
     }
 }
