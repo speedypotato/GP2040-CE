@@ -6,6 +6,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <cstdio>
 #include <pico/unique_id.h>
 
 #define XINPUT_ENDPOINT_SIZE 20
