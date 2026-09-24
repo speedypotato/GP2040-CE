@@ -18,6 +18,7 @@
 #include "drivers/xboxog/XboxOriginalDriver.h"
 #include "drivers/xinput/XInputDriver.h"
 #include "drivers/p5general/P5GeneralDriver.h"
+#include "drivers/mayflashs5/MayflashS5Driver.h"
 #include "drivers/sinput/SInputDriver.h"
 
 #include "usbhostmanager.h"
@@ -38,6 +39,9 @@ void DriverManager::setup(InputMode mode) {
             break;
         case INPUT_MODE_GENERIC:
             driver = new HIDDriver();
+            break;
+        case INPUT_MODE_MAYFLASHS5:
+            driver = new MayflashS5Driver();
             break;
         case INPUT_MODE_MDMINI:
             driver = new MDMiniDriver();
