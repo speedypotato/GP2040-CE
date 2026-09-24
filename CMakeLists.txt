@@ -210,6 +210,9 @@ src/drivers/astro/AstroDriver.cpp
 src/drivers/egret/EgretDriver.cpp
 src/drivers/hid/HIDDriver.cpp
 src/drivers/keyboard/KeyboardDriver.cpp
+src/drivers/mayflashs5/MayflashS5Auth.cpp
+src/drivers/mayflashs5/MayflashS5AuthUSBListener.cpp
+src/drivers/mayflashs5/MayflashS5Driver.cpp
 src/drivers/mdmini/MDMiniDriver.cpp
 src/drivers/neogeo/NeoGeoDriver.cpp
 src/drivers/net/NetDriver.cpp
@@ -388,6 +391,15 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 
 if(PICO_RP2040)
   target_compile_definitions(${PROJECT_NAME} PUBLIC PICO_FLOAT_IN_RAM=1)
+endif()
+
+# The exact S5 composite descriptor advertises an 8-byte control endpoint.
+option(MAYFLASH_S5_EXACT_IDENTITY "Enable exact Mayflash S5 USB identity" OFF)
+if(MAYFLASH_S5_EXACT_IDENTITY)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC
+    MAYFLASH_S5_EXACT_IDENTITY=1
+    CFG_TUD_ENDPOINT0_SIZE=8
+  )
 endif()
 
 target_include_directories(${PROJECT_NAME}  PRIVATE

@@ -261,6 +261,9 @@ void __not_in_flash_func(GP2040::run)() {
 	// Initialize our USB manager
 	USBHostManager::getInstance().start();
 
+	// Some drivers need the USB host initialized before device enumeration.
+	inputDriver->beforeRun();
+
 	if (configMode == true ) {
 		rndis_init(WEB_CONFIG_HOSTNAME);
 	}
