@@ -31,6 +31,7 @@ AnimationStation::AnimationStation() {
     brightnessStepValue = 0;
     normalisedBrightness = 0;
     TestMode = AnimationStationTestMode::AnimationStation_TestModeDisableTestMode;
+    savedProfileIndex = 0;
     bTestModeChangeRequested = false;
     TestModePinOrNonButtonIndex = -1;
     TestModeInputSource = LightInputSource::LightInputSource_GPIO;
@@ -202,8 +203,14 @@ void AnimationStation::UpdateTestMode()
             SetMode(MAX_ANIMATION_PROFILES_INCLUDING_TEST - 1);
             break;
         case AnimationStationTestMode::AnimationStation_TestModeDisableTestMode:
-            SetMode(0);     
+        {
+            const LEDOptions& ledOptions = Storage::getInstance().getLedOptions();
+            const AnimationOptions& animOptions = Storage::getInstance().getAnimationOptions();
+            SetMaxBrightness(ledOptions.brightnessMaximum);
+            SetBrightnessStepValue(animOptions.brightness);
+            SetMode(savedProfileIndex);
             break;
+        }
         default:
             break;
     };
@@ -299,6 +306,13 @@ void AnimationStation::AssignLedPreset(const unsigned char* data, int32_t dataSi
 	}
 }
 
+void AnimationStation::SetSavedMode(int32_t mode)
+{
+  // -1 (LEDs off) is a valid user choice; the test profile is not
+  if (mode >= -1 && mode < MAX_ANIMATION_PROFILES)
+    savedProfileIndex = mode;
+}
+
 int8_t AnimationStation::GetMode()
 {
   AnimationOptions & options = Storage::getInstance().getAnimationOptions();
@@ -391,6 +405,8 @@ void AnimationStation::SetMode(int8_t mode)
   AnimationOptions & options = Storage::getInstance().getAnimationOptions();
 
   options.baseProfileIndex = mode;
+  if (!IsTestModeActive())
+    SetSavedMode(mode);
 
   //remove old animations
   if (this->baseAnimation != nullptr)
