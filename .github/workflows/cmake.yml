@@ -111,8 +111,8 @@ jobs:
           fetch-tags: true
 
       - name: arm-none-eabi-gcc GNU Arm Embedded Toolchain
-        uses: carlosperate/arm-none-eabi-gcc-action@v1
-        with: 
+        uses: carlosperate/arm-none-eabi-gcc-action@v1.13.0
+        with:
           release: '15.3.Rel1'
 
       - name: Checkout pico-sdk/2.3.1
