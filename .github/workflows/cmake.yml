@@ -68,6 +68,7 @@ on:
           - SpeedyLabsBeamFox
           - SpeedyLabsLightFox
           - SpeedyLabsSplitFox
+          - SpeedyLabsSplitFoxMix
           - WaveshareZero
           - WaveshareRP2350BPlusW
           - SGFDevices
