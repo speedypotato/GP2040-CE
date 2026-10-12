@@ -66,6 +66,7 @@ on:
           - SparkFunProMicro
           - SparkFunProMicroRP2350
           - SpeedyLabsBeamFox
+          - SpeedyLabsLightFox
           - WaveshareZero
           - WaveshareRP2350BPlusW
           - SGFDevices
