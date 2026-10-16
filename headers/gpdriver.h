@@ -43,6 +43,9 @@ public:
     const usbd_class_driver_t * get_class_driver() { return &class_driver; }
     virtual USBListener * get_usb_auth_listener() = 0;
     virtual void beforeRun() {}
+    // Return true to keep the USB device detached (no D+ pull-up) from
+    // tusb_init until the driver calls tud_connect(), e.g. from beforeRun().
+    virtual bool deferUsbAttach() { return false; }
 protected:
     usbd_class_driver_t class_driver;
 };

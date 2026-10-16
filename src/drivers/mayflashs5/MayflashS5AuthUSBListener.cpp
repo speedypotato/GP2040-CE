@@ -41,6 +41,58 @@ static constexpr uint8_t touchpadFake[] = {
     0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00
 };
 
+// Soft host-port re-enumeration (MayflashS5Reenumerate.c).
+extern "C" void mayflash_s5_force_reenumerate(uint8_t root_idx);
+
+// After the unlock reply the S5 goes quiet (~810 ms) and switches into its
+// signing persona. The silence is the trigger: stay quiet, then force a soft
+// re-enumeration. If it never comes back, continue phase 2 in place.
+static constexpr uint64_t S5_QUIET_WAIT_US  = 850ll * 1000ll;
+static constexpr uint64_t S5_REENUM_WAIT_US = 1500ll * 1000ll;
+static constexpr uint8_t  S5_PIO_ROOT_IDX   = BOARD_TUH_RHPORT - 1;
+
+// Signing-on command sent after the feature chain: SET 0x80 {01 13}.
+static constexpr uint8_t S5_TESTCMD_ARG0 = 0x01;
+static constexpr uint8_t S5_TESTCMD_ARG1 = 0x13;
+
+// Control block a PS5 issues to a wired DualSense before the feature reports
+// (audio feature unit reads, a SET_CUR of 47 e6, then audio streaming alt 1 on
+// interfaces 1 and 2). The S5 expects it before it will sign. From Pelsin's
+// pcap-derived sequence.
+struct S5VendorReq {
+    uint8_t  bmRequestType;
+    uint8_t  bRequest;
+    uint16_t wValue;
+    uint16_t wIndex;
+    uint16_t wLength;
+};
+static const S5VendorReq s5VendorSeq[] = {
+    {0xA1, 0x82, 0x0200, 0x0500, 2},
+    {0xA1, 0x83, 0x0200, 0x0500, 2},
+    {0xA1, 0x84, 0x0200, 0x0500, 2},
+    {0xA1, 0x82, 0x0200, 0x0200, 2},
+    {0xA1, 0x83, 0x0200, 0x0200, 2},
+    {0xA1, 0x84, 0x0200, 0x0200, 2},
+    {0x21, 0x01, 0x0200, 0x0200, 2}, // SET_CUR, payload 47 e6
+    {0x01, 0x0B, 0x0001, 0x0001, 0}, // SET_INTERFACE itf1 alt1 (audio out)
+    {0x01, 0x0B, 0x0001, 0x0002, 0}, // SET_INTERFACE itf2 alt1 (audio in)
+};
+static constexpr uint8_t S5_VENDOR_SEQ_LEN =
+    sizeof(s5VendorSeq) / sizeof(s5VendorSeq[0]);
+static const uint8_t s5VendorSetData[2] = {0x47, 0xe6};
+
+// tuh_control_xfer needs a C callback and stable setup/buffer storage. Only
+// one S5 listener exists, so route the callback through a singleton.
+static MayflashS5AuthUSBListener * s5ListenerInstance = nullptr;
+static tusb_control_request_t s5VendorSetup;
+static uint8_t s5VendorBuf[8];
+
+static void s5VendorXferComplete(tuh_xfer_t * xfer) {
+    if (s5ListenerInstance != nullptr) {
+        s5ListenerInstance->onVendorXferComplete(xfer->daddr);
+    }
+}
+
 void MayflashS5AuthUSBListener::setup() {
     P5LPRINTF_INIT();
     P5LPRINTF("P5L:setup\n");
@@ -51,7 +103,67 @@ void MayflashS5AuthUSBListener::setup() {
     mount_probe_us = 0;
     probe_retries = 0;
     last_response_us = 0;
+    vendor_step = 0;
+    bringup_testcmd_pending = false;
+    s5ListenerInstance = this;
     resetHostData();
+}
+
+void MayflashS5AuthUSBListener::startPhase2() {
+    ps5AuthData->init_stage = 5;
+    vendor_step = 0;
+    awaiting_cb = true; // hold everything else until the feature chain starts
+    issueVendorStep();
+}
+
+void MayflashS5AuthUSBListener::issueVendorStep() {
+    while (vendor_step < S5_VENDOR_SEQ_LEN) {
+        const S5VendorReq & r = s5VendorSeq[vendor_step];
+        s5VendorSetup.bmRequestType = r.bmRequestType;
+        s5VendorSetup.bRequest      = r.bRequest;
+        s5VendorSetup.wValue        = r.wValue;
+        s5VendorSetup.wIndex        = r.wIndex;
+        s5VendorSetup.wLength       = r.wLength;
+        memset(s5VendorBuf, 0, sizeof(s5VendorBuf));
+        if ((r.bmRequestType & 0x80) == 0 && r.wLength > 0) {
+            memcpy(s5VendorBuf, s5VendorSetData, sizeof(s5VendorSetData));
+        }
+
+        tuh_xfer_t xfer = {};
+        xfer.daddr       = ps_dev_addr;
+        xfer.ep_addr     = 0;
+        xfer.setup       = &s5VendorSetup;
+        xfer.buffer      = s5VendorBuf;
+        xfer.complete_cb = s5VendorXferComplete;
+        xfer.user_data   = 0;
+        if (tuh_control_xfer(&xfer)) {
+            return; // completion advances the sequence
+        }
+        vendor_step++; // could not submit: skip it, like a stalled request
+    }
+    // Sequence done: start the feature chain (0x05 -> 0x20 -> 0x09 -> 0x80).
+    awaiting_cb = false;
+    memset(report_buffer, 0, 41);
+    host_get_report(PS5AuthReport::PS5_GET_CALIBRATION, report_buffer, 41);
+}
+
+void MayflashS5AuthUSBListener::onVendorXferComplete(uint8_t dev_addr) {
+    if (ps5AuthData == nullptr || dev_addr != ps_dev_addr) {
+        return;
+    }
+    // Advance regardless of result; a STALL on a read is harmless here.
+    vendor_step++;
+    issueVendorStep();
+}
+
+void MayflashS5AuthUSBListener::sendTestCommand() {
+    memset(report_buffer, 0, 64);
+    report_buffer[0] = PS5AuthReport::PS5_SET_TEST_PARAM;
+    report_buffer[1] = S5_TESTCMD_ARG0;
+    report_buffer[2] = S5_TESTCMD_ARG1;
+    if (host_set_report(PS5AuthReport::PS5_SET_TEST_PARAM, report_buffer, 64)) {
+        bringup_testcmd_pending = true;
+    }
 }
 
 void MayflashS5AuthUSBListener::resetHostData() {
@@ -119,24 +231,28 @@ void MayflashS5AuthUSBListener::process() {
         return;
     }
 
-    if (reset_state == S5ResetState::waiting_before_reset &&
-            getMicro() >= reset_action_us) {
-        ps5AuthData->init_stage = 3;
-        reset_state = S5ResetState::reset_asserted;
-        reset_action_us = getMicro() + 20ll * 1000ll;
-        hcd_event_device_remove(BOARD_TUH_RHPORT, false);
-        tuh_rhport_reset_bus(BOARD_TUH_RHPORT, true);
+    // Post-unlock: stay silent through the quiet window, then soft
+    // re-enumerate so the S5 comes back in its signing persona.
+    if (reset_state == S5ResetState::quiet_wait) {
+        if (getMicro() >= reset_action_us) {
+            ps5AuthData->init_stage = 3;
+            reset_state = S5ResetState::awaiting_remount;
+            reset_action_us = getMicro() + S5_REENUM_WAIT_US;
+            mayflash_s5_force_reenumerate(S5_PIO_ROOT_IDX);
+        }
         return;
     }
 
-    if (reset_state == S5ResetState::reset_asserted) {
+    if (reset_state == S5ResetState::awaiting_remount) {
         if (getMicro() < reset_action_us) {
             return;
         }
-        tuh_rhport_reset_bus(BOARD_TUH_RHPORT, false);
-        reset_state = S5ResetState::awaiting_remount;
-        ps5AuthData->init_stage = 4;
-        hcd_event_device_attach(BOARD_TUH_RHPORT, false);
+        // Never came back on its own: continue phase 2 on the same address.
+        reset_state = S5ResetState::idle;
+        if (ps5AuthData->dongle_mounted && ps_dev_addr != 0xFF) {
+            P5LPRINTF("P5L: no remount, phase 2 in place\n");
+            startPhase2();
+        }
         return;
     }
 
@@ -144,6 +260,11 @@ void MayflashS5AuthUSBListener::process() {
 
     // Host control transfers keep the caller's buffer until the callback.
     if (awaiting_cb) {
+        return;
+    }
+
+    // Nothing but bring-up talks to the S5 until signing is on (SET 0x80).
+    if (!ps5AuthData->dongle_ready) {
         return;
     }
 
@@ -298,10 +419,9 @@ void MayflashS5AuthUSBListener::mount(uint8_t dev_addr, uint8_t instance, uint8_
                 awaiting_cb = true;
             }
         } else {
+            // Re-mounted after the post-unlock re-enumeration: phase 2.
             reset_state = S5ResetState::idle;
-            ps5AuthData->init_stage = 5;
-            host_get_report(PS5AuthReport::PS5_GET_CALIBRATION,
-                report_buffer, 41);
+            startPhase2();
         }
     }
 }
@@ -313,10 +433,13 @@ void MayflashS5AuthUSBListener::unmount(uint8_t dev_addr) {
         return;
     }
 
+    // The S5 may drop off by itself during the quiet window; that is part of
+    // the unlock, not a real unplug.
     const bool intentional_reset =
-        reset_state == S5ResetState::reset_asserted ||
+        reset_state == S5ResetState::quiet_wait ||
         reset_state == S5ResetState::awaiting_remount;
     resetHostData();
+    bringup_testcmd_pending = false;
     set_interval_override(0);
     ps5AuthData->dongle_ready = false;
     ps5AuthData->dongle_mounted = false;
@@ -351,6 +474,20 @@ void MayflashS5AuthUSBListener::set_report_complete(uint8_t dev_addr, uint8_t in
     }
     awaiting_cb = false;
 
+    // Bring-up SET 0x80 landed: the S5 now signs. As in the standalone
+    // firmware this completes bring-up whatever the result; the 0x81 read is
+    // best-effort (the S5 may stall it).
+    if (report_id == PS5AuthReport::PS5_SET_TEST_PARAM && bringup_testcmd_pending) {
+        bringup_testcmd_pending = false;
+        ps5AuthData->init_stage = 6;
+        ps5AuthData->S5_reports_ready = true;
+        ps5AuthData->dongle_ready = true;
+        P5LPRINTF("P5L: signing on, S5 ready\n");
+        memset(report_buffer, 0, 64);
+        host_get_report(PS5AuthReport::PS5_GET_TEST_PARAM, report_buffer, 64);
+        return;
+    }
+
     // A failed transfer releases the endpoint but completes nothing.
     if (len == 0) return;
 
@@ -359,10 +496,9 @@ void MayflashS5AuthUSBListener::set_report_complete(uint8_t dev_addr, uint8_t in
             if (!local_auth_complete) {
                 local_auth_complete = true;
                 ps5AuthData->init_stage = 2;
-                // The dongle expects ~880 ms between unlock and the bus reset.
-                reset_state = S5ResetState::waiting_before_reset;
-                reset_action_us = getMicro() + 882ll * 1000ll;
-                P5LPRINTF("P5L: local auth complete; delayed reset armed\n");
+                reset_state = S5ResetState::quiet_wait;
+                reset_action_us = getMicro() + S5_QUIET_WAIT_US;
+                P5LPRINTF("P5L: local auth complete; quiet window armed\n");
             }
             break;
         case PS5AuthReport::PS5_SET_AUTH_PAYLOAD:
@@ -481,11 +617,9 @@ void MayflashS5AuthUSBListener::get_report_complete(uint8_t dev_addr, uint8_t in
             // Host buffers include the report ID; the device callback prepends it.
             memcpy(ps5AuthData->MAC_pair_report, &report_buffer[1], len-1);
             ps5AuthData->pair_info_ready = true;
-            if (local_auth_complete) {
-                ps5AuthData->init_stage = 6;
-                ps5AuthData->S5_reports_ready = true;
-                ps5AuthData->dongle_ready = true;
-                P5LPRINTF("P5L: post-reset S5 reports ready\n");
+            if (local_auth_complete && !ps5AuthData->dongle_ready) {
+                // Last step of bring-up: turn signing on.
+                sendTestCommand();
             }
             break;
         case PS5AuthReport::PS5_GET_FIRWMARE:

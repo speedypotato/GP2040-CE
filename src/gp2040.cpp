@@ -257,6 +257,11 @@ void __not_in_flash_func(GP2040::run)() {
 	// Start the TinyUSB Device functionality
 	const tusb_rhport_init_t dev_init = { .role = TUSB_ROLE_DEVICE, .speed = TUSB_SPEED_AUTO };
 	tusb_init(TUD_OPT_RHPORT, &dev_init);
+	// Detach straight away for drivers that must not be seen by the console
+	// until they are ready (the RP2040 DCD connects during init).
+	if (inputDriver->deferUsbAttach()) {
+		tud_disconnect();
+	}
 
 	// Initialize our USB manager
 	USBHostManager::getInstance().start();
