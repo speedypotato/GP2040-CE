@@ -51,6 +51,7 @@ public:
     virtual uint16_t GetJoystickMidValue();
     virtual USBListener * get_usb_auth_listener();
     virtual void beforeRun();
+    virtual bool deferUsbAttach() { return true; }
     bool getAuthSent() { return false;}
     bool getDongleAuthRequired();
 private:

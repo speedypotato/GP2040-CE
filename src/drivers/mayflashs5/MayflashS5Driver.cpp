@@ -229,10 +229,12 @@ bool MayflashS5Driver::getDongleAuthRequired() {
 }
 
 void MayflashS5Driver::beforeRun() {
-    // Do not expose an all-zero pair identity upstream.
-    tud_disconnect();
-    const uint64_t timeout = getMicro() + 5000ll * 1000ll;
-    while ( ps5AuthData != nullptr && !ps5AuthData->S5_reports_ready &&
+    // The device has been detached since tusb_init (deferUsbAttach). Attach
+    // only once the S5 has finished bring-up and is signing (SET 0x80 landed),
+    // so the console reads real pairing/calibration data on first enumeration.
+    // Timeout so a missing dongle can't hang boot.
+    const uint64_t timeout = getMicro() + 6000ll * 1000ll;
+    while ( ps5AuthData != nullptr && !ps5AuthData->dongle_ready &&
             getMicro() < timeout) {
         USBHostManager::getInstance().process();
         if (mayflashS5AuthDriver != nullptr &&

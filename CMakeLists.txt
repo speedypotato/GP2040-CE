@@ -211,6 +211,7 @@ src/drivers/keyboard/KeyboardDriver.cpp
 src/drivers/mayflashs5/MayflashS5Auth.cpp
 src/drivers/mayflashs5/MayflashS5AuthUSBListener.cpp
 src/drivers/mayflashs5/MayflashS5Driver.cpp
+src/drivers/mayflashs5/MayflashS5Reenumerate.c
 src/drivers/mdmini/MDMiniDriver.cpp
 src/drivers/neogeo/NeoGeoDriver.cpp
 src/drivers/net/NetDriver.cpp

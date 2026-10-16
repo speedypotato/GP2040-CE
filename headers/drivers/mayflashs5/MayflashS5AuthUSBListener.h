@@ -19,13 +19,22 @@ public:
     void process();
     void setAuthData(PS5AuthData * authData) { ps5AuthData = authData; }
     void resetHostData();
+    // Reached from the static tuh_control_xfer completion callback.
+    void onVendorXferComplete(uint8_t dev_addr);
 private:
     enum class S5ResetState : uint8_t {
         idle,
-        waiting_before_reset,
-        reset_asserted,
-        awaiting_remount,
+        quiet_wait,        // unlock landed: stay silent before re-enumerating
+        awaiting_remount,  // re-enumeration forced: wait for the S5 to return
     };
+
+    // Post-unlock bring-up (from Pelsin's standalone firmware): vendor/audio
+    // control block -> 0x05 -> 0x20 -> 0x09 -> SET 0x80 {01 13} (signing on).
+    void startPhase2();
+    void issueVendorStep();
+    void sendTestCommand();
+    uint8_t vendor_step = 0;
+    bool bringup_testcmd_pending = false;
 
     bool host_get_report(uint8_t report_id, void* report, uint16_t len);
     bool host_set_report(uint8_t report_id, void* report, uint16_t len);
