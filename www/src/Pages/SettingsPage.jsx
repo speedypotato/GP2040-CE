@@ -12,6 +12,7 @@ import { AppContext } from '../Contexts/AppContext';
 
 import ContextualHelpOverlay from '../Components/ContextualHelpOverlay';
 import KeyboardMapper from '../Components/KeyboardMapper';
+import MayflashS5Binding from '../Components/MayflashS5Binding';
 import Switch2ProController from '../Icons/Switch2ProController';
 import JoyCon2Controller from '../Icons/JoyCon2Controller';
 import SwitchProController from '../Icons/SwitchProController';
@@ -1431,6 +1432,13 @@ export default function SettingsPage() {
 								i18nKey="ps5-usb-host-mode-text"
 								components={{ span: <span className="text-info" /> }}
 							/>
+						</Col>
+					</Row>
+				)}
+				{values.ps5AuthType === 2 && (
+					<Row className="mb-3">
+						<Col sm={10}>
+							<MayflashS5Binding />
 						</Col>
 					</Row>
 				)}

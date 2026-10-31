@@ -177,6 +177,47 @@ export default {
 		'<span>⏳ WARNING ⏳:</span> PS5 will timeout after 8 minutes without authentication.',
 	'ps5-usb-host-mode-text':
 		'<span>INFO:</span> Please ensure USB Peripheral is enabled and a PS5 compatible USB device is plugged in.',
+	'mayflash-s5-binding': {
+		header: 'Mayflash S5 Wireless Binding Instructions',
+		intro:
+			'With a Mayflash S5 on the USB Peripheral port, the controller can be bound to a host over USB once and then used wirelessly.',
+		'platform-label': 'Platform',
+		platforms: {
+			ps5: 'PS5',
+			macos: 'macOS',
+			ios: 'iPhone / iPad',
+			windows: 'Windows',
+			other: 'Other platforms',
+		},
+		'bind-label': 'Bind',
+		'unbind-label': 'Unbind',
+		ps5: {
+			bind: '<ol><li>On the PS5, go to <strong>Settings > Accessories > Controllers (General) > Communication Method</strong> and select <strong>Use Bluetooth</strong>.</li><li>Connect the controller to the PS5 with a USB cable. It pairs automatically.</li><li>Unplug the cable. The controller now connects wirelessly whenever it is powered on.</li></ol>',
+			unbind:
+				'<ol><li>On the PS5, go to <strong>Settings > Accessories > General > Bluetooth Accessories</strong>.</li><li>Select <strong>DualSense Wireless Controller</strong> and choose <strong>Delete</strong>.</li></ol>',
+		},
+		macos: {
+			bind: '<ol><li>Requires macOS 26 or later.</li><li>Connect the controller to the Mac with a USB data cable and wait a few seconds until it appears in <strong>System Settings > Bluetooth</strong>.</li><li>Unplug the cable. The controller now connects wirelessly whenever it is powered on.</li></ol>',
+			unbind:
+				'<ol><li>Unplug the controller first (the option is unavailable while it is connected over USB).</li><li>In <strong>System Settings > Bluetooth</strong>, click the info button next to <strong>DualSense Wireless Controller</strong> and choose <strong>Forget This Device</strong>.</li></ol>',
+		},
+		ios: {
+			bind: '<ol><li>Requires iOS or iPadOS 26 or later and a device with a USB-C port.</li><li>Connect the controller with a USB-C data cable and wait a few seconds until it appears in <strong>Settings > Bluetooth</strong>.</li><li>Unplug the cable. The controller now connects wirelessly whenever it is powered on.</li></ol>',
+			unbind:
+				'<ol><li>Unplug the controller first.</li><li>In <strong>Settings > Bluetooth</strong>, tap the info button next to <strong>DualSense Wireless Controller</strong> and choose <strong>Forget This Device</strong>.</li></ol>',
+		},
+		windows: {
+			bind: '<ol><li>Windows does not bind the S5 on its own, so use the helper below. Download it now, while you are in this web configurator. It runs offline.</li><li>Restart the controller in PS5 mode with the S5 attached, and connect it to the PC with a USB data cable. Make sure Bluetooth is on.</li><li>Double-click <code>S5-Bind-Windows.cmd</code> and approve the administrator prompt. If Windows shows <strong>Windows protected your PC</strong>, choose <strong>More info > Run anyway</strong>.</li><li>When the helper says <strong>Paired</strong>, unplug the cable. The controller now connects wirelessly whenever it is powered on.</li></ol>',
+			download: 'Download S5-Bind-Windows.cmd',
+			unbind:
+				'<ol><li>In <strong>Settings > Bluetooth & devices</strong>, open the menu next to <strong>DualSense Wireless Controller</strong> and choose <strong>Remove device</strong>.</li></ol>',
+		},
+		other: {
+			text: 'Not supported yet:<ul><li><strong>Android</strong>: cannot bind the S5.</li><li><strong>Linux / SteamOS</strong>: the wireless link connects, but the system DualSense driver rejects the controller, so it does not appear as a game controller.</li><li><strong>PS4, Nintendo Switch, Xbox, Apple TV</strong>: not supported in this mode.</li></ul>',
+		},
+		'one-host-note':
+			'The S5 remembers one host at a time. Binding it to another system replaces the previous one; to switch back, bind it to that system again.',
+	},
 	'xbone-mode-text':
 		'<span>INFO:</span> Xbox One requires a USB host connection and USB dongle to properly authenticate in Xbox One mode.',
 	'p5general-mode-text':
